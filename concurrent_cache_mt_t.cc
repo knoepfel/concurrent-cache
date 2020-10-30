@@ -31,10 +31,14 @@ namespace {
     auto
     data_for(unsigned int const event)
     {
-      if (auto h = cache_.entry_for(event)) { return h; }
+      if (auto h = cache_.entry_for(event)) {
+        return h;
+      }
 
       for (auto const& [iov, value] : iovs) {
-        if (iov.supports(event)) { return cache_.emplace(iov, value); }
+        if (iov.supports(event)) {
+          return cache_.emplace(iov, value);
+        }
       }
 
       throw cet::exception("Data not found");
@@ -69,7 +73,9 @@ namespace {
     void
     tally(unsigned const event, std::string const& value)
     {
-      if (event < 10 and value == "Good") { ++the_goods; }
+      if (event < 10 and value == "Good") {
+        ++the_goods;
+      }
       else if (event > 9 and value == "Bad") {
         ++the_bads;
       }
@@ -85,7 +91,9 @@ namespace cet {
   std::ostream&
   operator<<(std::ostream& os, cache_handle<T> h)
   {
-    if (not h) { return os << "Invalid handle."; }
+    if (not h) {
+      return os << "Invalid handle.";
+    }
     return os << *h;
   }
 }

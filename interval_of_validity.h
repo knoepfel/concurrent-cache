@@ -24,26 +24,19 @@ namespace cet::test {
     {
       return range_ < other.range_;
     }
-    friend class iov_hasher;
+
+    bool
+    operator==(interval_of_validity const& other) const noexcept
+    {
+      return range_ == other.range_;
+    }
+
+    friend class std::hash<interval_of_validity>;
+    friend class tbb::tbb_hash_compare<interval_of_validity>;
     friend std::ostream& operator<<(std::ostream&, interval_of_validity const& iov);
 
   private:
     value_type range_;
-  };
-
-  struct iov_hasher {
-    std::size_t
-    hash(interval_of_validity const& iov) const
-    {
-      return hasher.hash(iov.range_);
-    }
-
-    bool
-    equal(interval_of_validity const& lhs, interval_of_validity const& rhs) const
-    {
-      return hasher.equal(lhs.range_, rhs.range_);
-    }
-    tbb::tbb_hash_compare<interval_of_validity::value_type> hasher;
   };
 
   inline std::ostream&
@@ -51,7 +44,39 @@ namespace cet::test {
   {
     return os << '[' << iov.range_.first << ", " << iov.range_.second << ')';
   }
+}
 
+namespace tbb {
+  template <>
+  struct tbb_hash_compare<cet::test::interval_of_validity> {
+    std::size_t
+    hash(cet::test::interval_of_validity const& iov) const
+    {
+      return hasher.hash(iov.range_);
+    }
+
+    bool
+    equal(cet::test::interval_of_validity const& lhs,
+          cet::test::interval_of_validity const& rhs) const
+    {
+      return hasher.equal(lhs.range_, rhs.range_);
+    }
+
+    tbb_hash_compare<cet::test::interval_of_validity::value_type> hasher;
+  };
+
+}
+
+namespace std {
+  template <>
+  struct hash<cet::test::interval_of_validity> {
+    std::size_t
+    operator()(cet::test::interval_of_validity const& iov) const
+    {
+      std::hash<unsigned> hash{};
+      return hash(iov.range_.first) ^ hash(iov.range_.second);
+    }
+  };
 }
 
 #endif /* cetlib_test_interval_of_validity_h */

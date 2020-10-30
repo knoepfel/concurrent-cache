@@ -12,7 +12,9 @@ namespace cet {
   std::ostream&
   boost_test_print_type(std::ostream& os, cache_handle<T> h)
   {
-    if (not h) { return os << "Invalid handle."; }
+    if (not h) {
+      return os << "Invalid handle.";
+    }
     return os << *h;
   }
 }
