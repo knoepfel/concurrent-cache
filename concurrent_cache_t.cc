@@ -107,7 +107,7 @@ BOOST_AUTO_TEST_CASE(copy_same_handle)
 
 BOOST_AUTO_TEST_CASE(user_defined)
 {
-  cet::concurrent_cache<cet::test::interval_of_validity, std::string, cet::test::iov_hasher> cache;
+  cet::concurrent_cache<cet::test::interval_of_validity, std::string> cache;
   auto const run_1 = "Run 1";
   auto const run_2 = "Run 2";
 
