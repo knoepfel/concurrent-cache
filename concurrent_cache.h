@@ -229,7 +229,25 @@ namespace cet {
       auto const erase_begin = cbegin(entries_to_drop) + keep_last;
       auto const erase_end = cend(entries_to_drop);
       for (auto it = erase_begin; it != erase_end; ++it) {
-        entries_.erase(it->second);
+        // We need to protect access to the element that is about to
+        // be erased (via entries_.find(...))--if we don't, then the
+        // reference count can be incremented during an insert and we
+        // end up erasing the element, creating invalid handles.
+        accessor access_token;
+        if (not entries_.find(access_token, it->second)) {
+          continue;
+        }
+
+        // It's possible the reference count to the element was
+        // increased between the unused_entries_() call and the
+        // entries_.find(...) call made directly above.  We therefore
+        // check that the reference count is actually zero before
+        // erasing the element.
+        if (access_token->second.reference_count() != 0u) {
+          continue;
+        }
+
+        entries_.erase(access_token);
       }
     }
 

@@ -4,7 +4,7 @@
 // ===================================================================
 // The concurrent_cache_entry class is a reference-counted object that
 // is used as the value_type of the concurrent_cache.  For more
-// details, see notes in concurrent_entry.h
+// details, see notes in concurrent_cache.h
 //
 // N.B. This is not intended to be user-facing.
 // ===================================================================
